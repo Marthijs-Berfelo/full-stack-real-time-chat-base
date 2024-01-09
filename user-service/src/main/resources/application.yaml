@@ -1,0 +1,16 @@
+server:
+  shutdown: graceful
+  port: 8003
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+  application:
+    name: user-service
+
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true

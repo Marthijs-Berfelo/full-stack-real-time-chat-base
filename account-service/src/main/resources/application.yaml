@@ -1,0 +1,73 @@
+IDENTITY_SERVICE_URL: http://localhost:8001
+ADMIN_USER: admin
+ADMIN_PASS: admin
+ADMIN_CLIENT_ID: admin-cli
+ADMIN_REALM: master
+CHAT_REALM: real-time-chat
+
+server:
+  shutdown: graceful
+  port: 8002
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  application:
+    name: account-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${IDENTITY_SERVICE_URL}/realms/${CHAT_REALM}
+
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - shutdown
+          - info
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+
+
+chat:
+  security:
+    client-id: ${spring.application.name}
+    unsecured-resources:
+      - /actuator
+      - /actuator/**
+      - /hello
+
+admin:
+  client:
+    url: ${IDENTITY_SERVICE_URL}
+    client-id: ${ADMIN_CLIENT_ID}
+    main-realm: ${ADMIN_REALM}
+    user: ${ADMIN_USER}
+    pass: ${ADMIN_PASS}
+    realm: ${CHAT_REALM}
+
+operator:
+  config-map-name: chat-security
+
+logging:
+  level:
+    root: info
+    com:
+      example: debug
+    io:
+      micrometer: warn
+      opentelemetry: warn

@@ -1,0 +1,69 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_PASSWORD: real-time-chat
+      POSTGRES_USER: identity
+    ports:
+      - '15432:5432'
+    networks:
+      - chat-bridge
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  identity-service:
+    image: quay.io/keycloak/keycloak:22.0.1
+    container_name: identity-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - KC_LOG_LEVEL=info
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HOSTNAME_STRICT_HTTPS=false
+      - KC_DB=postgres
+      - KC_DB_SCHEMA=public
+      - KC_DB_URL_PORT=5432
+      - KC_DB_URL_HOST=postgres
+      - KC_DB_USERNAME=identity
+      - KC_DB_PASSWORD=real-time-chat
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=false
+    entrypoint: /opt/keycloak/bin/kc.sh start-dev --http-enabled=true --cache=local
+    ports:
+      - "8001:8080"
+    networks:
+      - chat-bridge
+  mongodb:
+    image: mongo:7.0.4-jammy
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: real-time-chat
+    ports:
+      - '27017:27017'
+    networks:
+      - chat-bridge
+    healthcheck:
+      test: mongosh --eval 'db.runCommand("ping").ok' --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  jaeger-service:
+    image: jaegertracing/all-in-one:1.52.0
+    container_name: jeager-service
+    ports:
+      - "16686:16686" # the jaeger UI
+      - "4317:4317" # the OpenTelemetry collector grpc
+      - "4318:4318" # the OpenTelemetry collector http
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+networks:
+  chat-bridge:
+    driver: bridge

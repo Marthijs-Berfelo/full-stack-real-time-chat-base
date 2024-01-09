@@ -1,0 +1,27 @@
+apiVersion: skaffold/v4beta8
+kind: Config
+metadata:
+  name: real-time-chat
+build:
+  tagPolicy:
+    sha256: {}
+profiles:
+  - name: dev
+#    build:
+#      artifacts:
+#        - image: real-time-chat/account-service
+#          custom:
+#            buildCommand: ./account-service/gradlew bootBuildImage --imageName=$IMAGE
+#        - image: real-time-chat/user-service
+#          custom:
+#            buildCommand: ./user-service/gradlew bootBuildImage --imageName=$IMAGE
+#        - image: real-time-chat/message-service
+#          custom:
+#            buildCommand: ./message-service/gradlew bootBuildImage --imageName=$IMAGE
+    deploy:
+      docker:
+        useCompose: true
+        images: []
+#          - real-time-chat/account-service
+#          - real-time-chat/user-service
+#          - real-time-chat/message-service
