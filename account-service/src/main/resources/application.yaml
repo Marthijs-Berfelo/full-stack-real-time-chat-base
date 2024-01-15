@@ -60,9 +60,6 @@ admin:
     pass: ${ADMIN_PASS}
     realm: ${CHAT_REALM}
 
-operator:
-  config-map-name: chat-security
-
 logging:
   level:
     root: info

@@ -1,12 +1,13 @@
 plugins {
     `java-library`
     `maven-publish`
+    alias(spring.plugins.dependencyManagement)
 }
 
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.valueOf(lib.versions.java.get())
 }
 
 repositories {
@@ -14,7 +15,6 @@ repositories {
 }
 
 dependencies {
-    implementation(platform(spring.bootParent))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     api("org.springframework.boot:spring-boot-starter-validation")

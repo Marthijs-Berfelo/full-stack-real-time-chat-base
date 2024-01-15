@@ -3,7 +3,6 @@ package com.example.chat.account.config
 import jakarta.annotation.PostConstruct
 import jakarta.validation.constraints.NotBlank
 import org.keycloak.admin.client.Keycloak
-import org.keycloak.admin.client.resource.ClientScopesResource
 import org.keycloak.admin.client.resource.ClientsResource
 import org.keycloak.admin.client.resource.GroupsResource
 import org.keycloak.admin.client.resource.RealmResource
@@ -69,6 +68,4 @@ class AdminConfiguration {
     fun clients(): ClientsResource =
         realm().clients()
 
-    fun foo(): ClientScopesResource =
-        realm().clientScopes()
 }

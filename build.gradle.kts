@@ -3,31 +3,33 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") apply false
-    id("io.spring.dependency-management") apply false
-    id("org.graalvm.buildtools.native") apply false
-    kotlin("plugin.spring") apply false
-    kotlin("jvm") apply false
+    alias(spring.plugins.boot) apply false
+    alias(spring.plugins.dependencyManagement) apply false
+    alias(spring.plugins.nativeBuild) apply false
+    alias(kt.plugins.spring) apply false
+    alias(kt.plugins.jvm) apply false
 }
 
-group = "com.example.chat"
-version = "0.0.1-SNAPSHOT"
+val javaVersion = JavaVersion.valueOf(lib.versions.java.get())
+val springBootPlugin = spring.plugins.boot.get().pluginId
+val kotlinJvmPlugin = kt.plugins.jvm.get().pluginId
+val kotlinSpringPlugin = kt.plugins.spring.get().pluginId
+
 
 allprojects {
     repositories {
         mavenCentral()
     }
 
-    apply(plugin ="org.springframework.boot")
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-
+    apply(plugin = springBootPlugin)
+    apply(plugin = kotlinJvmPlugin)
+    apply(plugin = kotlinSpringPlugin)
 
     tasks {
         withType<KotlinCompile> {
             kotlinOptions {
                 freeCompilerArgs += "-Xjsr305=strict"
-                jvmTarget = "17"
+                jvmTarget = javaVersion.majorVersion
             }
         }
         withType<Test> {

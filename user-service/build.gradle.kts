@@ -1,6 +1,6 @@
 plugins {
-    id("io.spring.dependency-management")
-    id("org.graalvm.buildtools.native")
+    alias(spring.plugins.dependencyManagement)
+    alias(spring.plugins.nativeBuild)
 }
 
 version = "0.0.1-SNAPSHOT"

@@ -1,13 +1,13 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("io.spring.dependency-management")
+    alias(spring.plugins.dependencyManagement)
 }
 
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.valueOf(lib.versions.java.get())
 }
 
 configurations {
