@@ -2,6 +2,7 @@ package com.example.chat.security.common
 
 import com.example.chat.security.common.TokenAttributes.Companion.EMAIL
 import com.example.chat.security.common.TokenAttributes.Companion.FIRST_NAME
+import com.example.chat.security.common.TokenAttributes.Companion.FULL_NAME
 import com.example.chat.security.common.TokenAttributes.Companion.LAST_NAME
 import com.example.chat.security.common.TokenAttributes.Companion.MIDDLE_NAME
 import com.example.chat.security.common.TokenAttributes.Companion.NICK_NAME
@@ -70,12 +71,22 @@ class SecurityProperties {
             properties = mapOf(
                 "claim.name" to MIDDLE_NAME,
                 "jsonType.label" to "String",
-                "user.attribute" to "middleName"
+                "user.attribute" to MIDDLE_NAME
+            )
+        )
+        var chatUserId = TokenMapperProperties(
+            name = "chat user id",
+            tokenKey = "chat_user_id",
+            mapperName = "oidc-usermodel-attribute-mapper",
+            properties = mapOf(
+                "claim.name" to "chat_user_id",
+                "jsonType.label" to "String",
+                "user.attribute" to "chat_user_id"
             )
         )
         override var fullName = TokenMapperProperties(
             name = "full name",
-            tokenKey = MIDDLE_NAME,
+            tokenKey = FULL_NAME,
             mapperName = "oidc-full-name-mapper"
         )
         override var nickName = TokenMapperProperties(

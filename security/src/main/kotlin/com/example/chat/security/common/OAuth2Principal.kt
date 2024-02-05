@@ -26,6 +26,7 @@ data class DefaultOAuth2Principal(
     override val middleName: String?,
     override val lastName: String?,
     val nickName: String?,
+    val chatUserId: String?,
     private val authorities: List<GrantedAuthority>,
     private val attributes: MutableMap<String, Any>
 ) : OAuth2Principal {

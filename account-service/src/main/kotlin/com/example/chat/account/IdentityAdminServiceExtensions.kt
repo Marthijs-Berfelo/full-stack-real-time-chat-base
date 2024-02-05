@@ -43,6 +43,24 @@ internal fun RealmResource.ensureClientScopeExists(service: IdentityAdminService
         .let { service.ensureClientScopeMappers(it) }
         .let { this }
 
+internal fun RealmResource.ensureRolesExist(service: IdentityAdminService): RealmResource =
+    roles()
+        .let { it to it.list() }
+        .let { ( rolesResource, roles) ->
+        roles.forEach {
+            role ->
+                if (service.requiredRoles.none(role::equalsRole)) {
+                    rolesResource.deleteRole(role.name)
+                }
+        }
+            service.requiredRoles
+                .filterNot { requiredRole -> roles.any(requiredRole::equalsRole) }
+                .map(UserRole::toRepresentation)
+                .forEach(rolesResource::create)
+
+        }
+        .let { this }
+
 internal fun IdentityAdminService.ensureDefaultClientScopes(realm: RealmResource, scopeResource: ClientScopeResource) {
     val customScopeName = scopeResource.toRepresentation().name
     val scopes = this.securityProperties.defaultClientScopes.plus(customScopeName)

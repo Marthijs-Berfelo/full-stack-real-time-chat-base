@@ -58,7 +58,7 @@ admin:
     main-realm: ${ADMIN_REALM}
     user: ${ADMIN_USER}
     pass: ${ADMIN_PASS}
-    realm: ${CHAT_REALM}
+    realm-name: ${CHAT_REALM}
 
 logging:
   level:

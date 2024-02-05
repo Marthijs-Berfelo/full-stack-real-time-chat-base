@@ -1,5 +1,6 @@
 package com.example.chat.account.config
 
+import com.example.chat.security.common.UserRole
 import jakarta.annotation.PostConstruct
 import jakarta.validation.constraints.NotBlank
 import org.keycloak.admin.client.Keycloak
@@ -7,6 +8,7 @@ import org.keycloak.admin.client.resource.ClientsResource
 import org.keycloak.admin.client.resource.GroupsResource
 import org.keycloak.admin.client.resource.RealmResource
 import org.keycloak.admin.client.resource.UsersResource
+import org.keycloak.authorization.client.AuthzClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -29,8 +31,13 @@ class AdminConfiguration {
     @field:NotBlank
     lateinit var clientId: String
     @field:NotBlank
-    lateinit var realm: String
+    lateinit var realmName: String
     var readiness: ReadinessProperties = ReadinessProperties()
+    var requiredRoles: List<UserRole> =
+        listOf(
+            UserRole.REGISTERED,
+            UserRole.ANONYMOUS
+        )
 
     class ReadinessProperties {
         var timeOut: Duration = Duration.ofMinutes(2)
@@ -39,6 +46,7 @@ class AdminConfiguration {
 
     internal val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
     internal lateinit var adminClient: Keycloak
+    internal lateinit var realm: RealmResource
 
     @PostConstruct
     fun init() {
@@ -50,22 +58,30 @@ class AdminConfiguration {
             clientId
         )
         waitUntilClientReady()
+        realm = adminClient.realm(realmName)
     }
 
     @Bean
-    fun realm(): RealmResource =
-        adminClient.realm(realm)
+    fun authClient(): AuthzClient =
+        AuthzClient.create(
+            org.keycloak.authorization.client.Configuration(
+            url,
+            realmName,
+            clientId,
+            null,
+            null
+        ))
 
     @Bean
     fun users(): UsersResource =
-        realm().users()
+        realm.users()
 
     @Bean
     fun groups(): GroupsResource =
-        realm().groups()
+        realm.groups()
 
     @Bean
     fun clients(): ClientsResource =
-        realm().clients()
+        realm.clients()
 
 }

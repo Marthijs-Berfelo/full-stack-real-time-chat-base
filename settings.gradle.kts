@@ -38,6 +38,7 @@ dependencyResolutionManagement {
             val keycloakVersion: String by settings
             val keycloakGroup = "org.keycloak"
             library("adminClient", keycloakGroup, "keycloak-admin-client").version(keycloakVersion)
+            library("authClient", keycloakGroup, "keycloak-authz-client").version(keycloakVersion)
             library("core", keycloakGroup, "keycloak-core").version(keycloakVersion)
             library("services", keycloakGroup, "keycloak-services").version(keycloakVersion)
         }

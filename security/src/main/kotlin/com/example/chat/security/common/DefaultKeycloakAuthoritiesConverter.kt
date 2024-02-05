@@ -38,6 +38,7 @@ class DefaultKeycloakAuthoritiesConverter(authProperties: SecurityProperties) :
             lastName = source.claim(props.lastName.tokenKey),
             nickName = source.claim(props.nickName.tokenKey),
             email = source.claim(props.email.tokenKey),
+            chatUserId = source.claim(props.chatUserId.tokenKey),
             authorities = roles,
             attributes = source.claims
         )

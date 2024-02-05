@@ -23,6 +23,7 @@ dependencies {
 	implementation(project(":contract"))
 	implementation(project(":security"))
 	implementation(keycloak.adminClient)
+	implementation(keycloak.authClient)
 	implementation(keycloak.core)
 	implementation(keycloak.services)
 	implementation("org.springframework.boot","spring-boot-starter-actuator")
