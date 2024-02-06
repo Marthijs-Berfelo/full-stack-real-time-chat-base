@@ -1,4 +1,4 @@
-package com.example.chat.account.config
+package com.example.chat.config
 
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.info.ServerInfoRepresentation

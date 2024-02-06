@@ -1,16 +1,19 @@
 package com.example.chat.account
 
-import com.example.chat.account.config.AdminConfiguration
+import com.example.chat.config.AdminConfiguration
 import com.example.chat.common.generatePassword
 import com.example.chat.security.common.SecurityProperties
 import com.example.chat.security.common.UserRole
+import jakarta.validation.Valid
 import org.keycloak.admin.client.resource.UsersResource
 import org.keycloak.authorization.client.AuthzClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import javax.annotation.PostConstruct
 
+@Validated
 @Service
 class IdentityAdminService(
     adminProperties: AdminConfiguration,
@@ -32,7 +35,7 @@ class IdentityAdminService(
             .ensureAccountClientExists(this)
     }
 
-    fun registerAccount(registration: AccountRegistration): Result<Unit> =
+    fun registerAccount(@Valid registration: AccountRegistration): Result<Unit> =
         runCatching {
             registration
                 .toRepresentation(securityProperties.tokenAttributes)
@@ -42,7 +45,7 @@ class IdentityAdminService(
                 .getOrThrow()
         }
 
-    fun registerChatUser(registration: ChatRegistration): Result<AuthTokens> =
+    fun registerChatUser(@Valid registration: ChatRegistration): Result<AuthTokens> =
         runCatching {
             registration
                 .toRepresentation(securityProperties.tokenAttributes)
@@ -54,7 +57,7 @@ class IdentityAdminService(
                         .getOrThrow()
                         .let { password }
                 }
-                .let { login(username = registration.username, password = it) }
+                .let { login(username = registration.nickName, password = it) }
                 .getOrThrow()
         }
 

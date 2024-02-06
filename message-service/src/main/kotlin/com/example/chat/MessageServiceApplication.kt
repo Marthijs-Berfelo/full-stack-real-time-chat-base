@@ -1,11 +1,11 @@
-package com.example.chat.account
+package com.example.chat
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class AccountServiceApplication
+class MessageServiceApplication
 
 fun main(args: Array<String>) {
-	runApplication<AccountServiceApplication>(*args)
+    runApplication<MessageServiceApplication>(*args)
 }

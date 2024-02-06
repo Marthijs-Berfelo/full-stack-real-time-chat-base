@@ -1,3 +1,9 @@
+DB_HOST: localhost
+DB_PORT: 27017
+DB_USER: root
+DB_PASS: real-time-chat
+DB_NAME: message-db
+
 server:
   shutdown: graceful
   port: 8004
@@ -7,6 +13,13 @@ spring:
     timeout-per-shutdown-phase: 10s
   application:
     name: message-service
+  data:
+    mongodb:
+      host: ${DB_HOST}
+      port: ${DB_PORT}
+      username: ${DB_USER}
+      password: ${DB_PASS}
+      database: ${DB_NAME}
 
 
 management:

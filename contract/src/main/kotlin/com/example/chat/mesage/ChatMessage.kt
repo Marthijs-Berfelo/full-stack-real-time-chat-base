@@ -7,13 +7,14 @@ import java.time.Instant
 
 @Validated
 data class ChatMessage(
+    val id: String,
     @field:NotBlank
     val from: String,
     @field:NotBlank
     val to: String,
     @field:NotBlank
     val conversationId: String,
-    val sendAt: Instant = Instant.now(),
+    val sentAt: Instant = Instant.now(),
     @field:Max(value = 256)
     @field:NotBlank
     val message: String

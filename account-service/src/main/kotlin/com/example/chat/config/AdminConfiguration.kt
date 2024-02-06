@@ -1,4 +1,4 @@
-package com.example.chat.account.config
+package com.example.chat.config
 
 import com.example.chat.security.common.UserRole
 import jakarta.annotation.PostConstruct

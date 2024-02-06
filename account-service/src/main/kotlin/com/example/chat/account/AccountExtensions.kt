@@ -34,7 +34,7 @@ fun ChatRegistration.toRepresentation(
     let {
         UserRepresentation()
             .apply {
-                username = it.username
+                username = it.nickName
                 if (it.email != null) {
                     email = it.email
                 }
