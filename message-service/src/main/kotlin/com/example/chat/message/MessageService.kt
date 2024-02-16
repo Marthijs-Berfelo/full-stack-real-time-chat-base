@@ -6,6 +6,7 @@ import jakarta.validation.Valid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -47,21 +48,26 @@ class MessageService(
         }
             .onFailure { log.atWarn().setCause(it).log { "Failed to receive message: $message" } }
 
-    fun messages(userId: String): Flow<ChatMessage> =
-        publisher
-            .filter { it.to == userId }
+    fun getMessages(chatUserId: String): Flow<ChatMessage> =
+        messageRepo
+            .findAllByTo(chatUserId)
+            .map(MessageDocument::toMessage)
 
-    suspend fun cleanUp(userId: String): Result<Unit> =
+    fun messageUpdates(chatUserId: String): Flow<ChatMessage> =
+        publisher
+            .filter { it.to == chatUserId }
+
+    suspend fun cleanUp(chatUserId: String): Result<Unit> =
         runCatching {
             conversationRepo
-                .also { log.atInfo().log { "Cleaning up conversations for user: $userId" } }
-                .getAllByUsersContains(userId)
-                .let { removeUserReference(userId, it) }
+                .also { log.atInfo().log { "Cleaning up conversations for user: $chatUserId" } }
+                .getAllByUsersContains(chatUserId)
+                .let { removeUserReference(chatUserId, it) }
                 .also { removeMessages(it) }
                 .let { conversationRepo.deleteAll(it) }
-                .also { log.atDebug().log { "Conversations cleaned up for user: $userId" } }
+                .also { log.atDebug().log { "Conversations cleaned up for user: $chatUserId" } }
         }
-            .onFailure { log.atWarn().setCause(it).log { "Failed to clean up conversations for user: $userId" } }
+            .onFailure { log.atWarn().setCause(it).log { "Failed to clean up conversations for user: $chatUserId" } }
 
 }
 
