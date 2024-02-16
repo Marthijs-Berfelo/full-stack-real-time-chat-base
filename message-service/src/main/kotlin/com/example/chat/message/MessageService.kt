@@ -22,19 +22,19 @@ class MessageService(
 
     internal val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
 
-    suspend fun initializeConversation(userId: String, peerUserId: String): Result<Conversation> =
+    suspend fun initializeConversation(chatUserId: String, peerUserId: String): Result<Conversation> =
         runCatching {
-            listOf(userId, peerUserId)
+            listOf(chatUserId, peerUserId)
                 .also { log.atInfo().log { "Initialize conversation between users: $it" } }
                 .let {
-                    findExistingConversation(userId, it)
+                    findExistingConversation(chatUserId, it)
                         ?: createConversation(it)
                 }
                 .toConversation()
         }
             .onFailure {
                 log.atWarn().setCause(it)
-                    .log { "Failed to initialize conversation between users: ${listOf(userId, peerUserId)}" }
+                    .log { "Failed to initialize conversation between users: ${listOf(chatUserId, peerUserId)}" }
             }
 
     suspend fun receive(@Valid message: ChatMessage): Result<ChatMessage> =
