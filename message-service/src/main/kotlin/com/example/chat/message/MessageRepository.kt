@@ -7,6 +7,8 @@ interface MessageRepository : CoroutineCrudRepository<MessageDocument, String> {
 
     fun findAllByConversationId(conversationId: String): Flow<MessageDocument>
 
+    fun findAllByTo(to: String): Flow<MessageDocument>
+
     suspend fun deleteAllByConversationIdIn(conversationIds: Flow<String>)
 
 }

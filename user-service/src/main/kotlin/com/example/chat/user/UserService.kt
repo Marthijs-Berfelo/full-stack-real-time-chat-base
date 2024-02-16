@@ -41,7 +41,7 @@ class UserService(
         }
             .onFailure { log.atWarn().setCause(it).log { "User name check resulted in failure: ${it.message}" } }
 
-    suspend fun getUsers(): Flow<ChatUser> =
+    fun getUsers(): Flow<ChatUser> =
         repo
             .also { log.atInfo().log { "Get all users" } }
             .findAll()
