@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length
 import org.springframework.validation.annotation.Validated
 
 @Validated
-data class ChatRegistration(
+data class ChatAccountRegistration(
     @field:Length(min = 4, max = 64)
     val nickName: String,
     @field: NotBlank

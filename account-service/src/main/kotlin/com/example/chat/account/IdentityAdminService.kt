@@ -45,7 +45,7 @@ class IdentityAdminService(
                 .getOrThrow()
         }
 
-    fun registerChatUser(@Valid registration: ChatRegistration): Result<AuthTokens> =
+    fun registerChatUser(@Valid registration: ChatAccountRegistration): Result<AuthTokens> =
         runCatching {
             registration
                 .toRepresentation(securityProperties.tokenAttributes)

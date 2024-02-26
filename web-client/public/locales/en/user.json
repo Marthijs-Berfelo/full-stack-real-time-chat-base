@@ -1,0 +1,12 @@
+{
+  "nick-name": "Nick name",
+  "picture": "Picture",
+  "status": "Status",
+  "errors": {
+    "login": "Failed to log in",
+    "chat-login": "Failed to access chat",
+    "duplicate-user": "Nick name already taken!",
+    "account-registration": "Registration failed!"
+  },
+  "registration-success": "Account created, check your e-mail to confirm your registration."
+}

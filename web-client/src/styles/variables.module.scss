@@ -1,0 +1,16 @@
+@import "colors";
+
+:export {
+  colorWhite: $color-white;
+  colorInfoText: $info-text;
+  colorInfoBG: $info-background;
+  colorSuccessText: $success-text;
+  colorSuccessBG: $success-background;
+  colorWarningText: $warning-text;
+  colorWarningBG: $warning-background;
+  colorErrorText: $error-text;
+  colorErrorBG: $error-background;
+  colorText: $default-text;
+  colorPrimary: $primary-color;
+  colorPrimaryBorder: $primary-border;
+}
