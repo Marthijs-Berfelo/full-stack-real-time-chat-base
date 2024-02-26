@@ -9,7 +9,7 @@ import java.time.Instant
 @Document(collection = "message")
 data class MessageDocument(
     @Id
-    val id: String = "",
+    val id: String,
     val from: String,
     val to: String,
     val conversationId: String,
@@ -20,17 +20,17 @@ data class MessageDocument(
 @Document(collection = "conversation")
 data class ConversationDocument(
     @Id
-    val id: String = "",
+    val id: String,
     val users: List<String>
 )
 
 fun ChatMessage.toDocument(): MessageDocument =
     MessageDocument(
-        id = id,
+        id = id ?: "",
         from = from,
         to = to,
         conversationId = conversationId,
-        sentAt = sentAt,
+        sentAt = sentAt ?: Instant.now(),
         message = message
     )
 

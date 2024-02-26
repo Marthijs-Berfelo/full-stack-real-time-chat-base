@@ -1,0 +1,11 @@
+@import "colors";
+
+.ant-btn.ant-btn-primary {
+  background: $primary-color;
+  color: $color-white;
+
+  &:hover {
+    background: $primary-border;
+    color: $color-white;
+  }
+}

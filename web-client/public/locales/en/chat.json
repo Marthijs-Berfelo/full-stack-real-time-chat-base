@@ -1,0 +1,15 @@
+{
+  "section": {
+    "user-list": "Chat users",
+    "inbox": "Inbox",
+    "user-profile": "Profile"
+  },
+  "message": {
+    "reset": "Reset",
+    "send": "Send message"
+  },
+  "user": {
+    "off-line": "Off line",
+    "me": "Me"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "first-name": "First name",
+  "last-name": "Last name",
+  "middle-name": "Middle name",
+  "email": "Email address",
+  "password": "Password",
+  "password-confirm": "Confirm password",
+  "name": "Name",
+  "login": "Log in",
+  "logout": "Log out",
+  "register": "Register account",
+  "errors": {
+    "password-confirm": "Must match password"
+  }
+}

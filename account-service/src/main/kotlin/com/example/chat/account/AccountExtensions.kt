@@ -28,7 +28,7 @@ fun AccountRegistration.toRepresentation(
             }
     }
 
-fun ChatRegistration.toRepresentation(
+fun ChatAccountRegistration.toRepresentation(
     tokenAttributes: SecurityProperties.TokenAttributeProperties
 ): UserRepresentation =
     let {
