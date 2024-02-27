@@ -11,6 +11,8 @@ services:
       - '15432:5432'
     networks:
       - chat-bridge
+    volumes:
+      - idp-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 10s
@@ -40,6 +42,11 @@ services:
       - "8001:8080"
     networks:
       - chat-bridge
+    healthcheck:
+      test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)new java.net.URL(args[0]).openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/health/ready']
+      interval: 10s
+      timeout: 5s
+      retries: 5
   mongodb:
     image: mongo:7.0.4-jammy
     container_name: mongodb
@@ -50,6 +57,8 @@ services:
       - '27017:27017'
     networks:
       - chat-bridge
+    volumes:
+      - chat-data:/data/db
     healthcheck:
       test: mongosh --eval 'db.runCommand("ping").ok' --quiet
       interval: 10s
@@ -64,6 +73,21 @@ services:
       - "4318:4318" # the OpenTelemetry collector http
     environment:
       - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - chat-bridge
 networks:
   chat-bridge:
     driver: bridge
+volumes:
+  idp-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /tmp/real-time-chat/data/idp
+  chat-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /tmp/real-time-chat/data/chat

@@ -8,7 +8,6 @@ import org.keycloak.admin.client.resource.ClientsResource
 import org.keycloak.admin.client.resource.GroupsResource
 import org.keycloak.admin.client.resource.RealmResource
 import org.keycloak.admin.client.resource.UsersResource
-import org.keycloak.authorization.client.AuthzClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -47,6 +46,7 @@ class AdminConfiguration {
     internal val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
     internal lateinit var adminClient: Keycloak
     internal lateinit var realm: RealmResource
+    internal lateinit var authzClientConfig: org.keycloak.authorization.client.Configuration
 
     @PostConstruct
     fun init() {
@@ -59,18 +59,14 @@ class AdminConfiguration {
         )
         waitUntilClientReady()
         realm = adminClient.realm(realmName)
+        authzClientConfig = org.keycloak.authorization.client.Configuration(
+                url,
+                realmName,
+                clientId,
+                null,
+                null
+            )
     }
-
-    @Bean
-    fun authClient(): AuthzClient =
-        AuthzClient.create(
-            org.keycloak.authorization.client.Configuration(
-            url,
-            realmName,
-            clientId,
-            null,
-            null
-        ))
 
     @Bean
     fun users(): UsersResource =

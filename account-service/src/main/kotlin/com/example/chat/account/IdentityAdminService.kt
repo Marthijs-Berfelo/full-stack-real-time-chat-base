@@ -19,12 +19,13 @@ class IdentityAdminService(
     adminProperties: AdminConfiguration,
     internal val securityProperties: SecurityProperties,
     internal val usersResource: UsersResource,
-    internal val authClient: AuthzClient
 ) {
     internal val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
     internal val client = adminProperties.adminClient
     internal val realmName = adminProperties.realmName
     internal val requiredRoles = adminProperties.requiredRoles
+    internal val authClientConfig = adminProperties.authzClientConfig
+    internal lateinit var authClient: AuthzClient
 
 
     @PostConstruct
@@ -33,6 +34,7 @@ class IdentityAdminService(
             .ensureClientScopeExists(this)
             .ensureRolesExist(this)
             .ensureAccountClientExists(this)
+        authClient = AuthzClient.create(authClientConfig)
     }
 
     fun registerAccount(@Valid registration: AccountRegistration): Result<Unit> =
