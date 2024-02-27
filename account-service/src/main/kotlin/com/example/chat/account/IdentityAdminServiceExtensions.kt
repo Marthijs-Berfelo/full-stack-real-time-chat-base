@@ -47,14 +47,11 @@ internal fun RealmResource.ensureRolesExist(service: IdentityAdminService): Real
     roles()
         .let { it to it.list() }
         .let { ( rolesResource, roles) ->
-        roles.forEach {
-            role ->
-                if (service.requiredRoles.none(role::equalsRole)) {
-                    rolesResource.deleteRole(role.name)
-                }
-        }
+        roles
+            .also { service.log.atDebug().log { "Existing roles: $it" } }
             service.requiredRoles
                 .filterNot { requiredRole -> roles.any(requiredRole::equalsRole) }
+                .also { service.log.atDebug().log { "Creating roles: ${it.map { it.name }}" } }
                 .map(UserRole::toRepresentation)
                 .forEach(rolesResource::create)
 
