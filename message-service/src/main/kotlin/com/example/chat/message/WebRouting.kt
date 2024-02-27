@@ -2,7 +2,7 @@ package com.example.chat.message
 
 import com.example.chat.mesage.ChatMessage
 import com.example.chat.mesage.ConversationRegistration
-import com.example.chat.message.WebHandler.Companion.CONVERSATION_ID_PARAM
+import com.example.chat.message.MessageRouterHandler.Companion.CONVERSATION_ID_PARAM
 import com.example.chat.security.web.EnableWebSecurity
 import com.example.chat.security.web.chatUserId
 import org.springframework.context.annotation.Bean
@@ -16,7 +16,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.server.ResponseStatusException
 
 @Component
-class WebHandler(private val service: MessageService) {
+class MessageRouterHandler(private val service: MessageService) {
 
     companion object {
         const val CONVERSATION_ID_PARAM = "conversationId"
@@ -64,7 +64,7 @@ class WebRoutingConfig {
     }
 
     @Bean
-    fun messageRoutes(handler: WebHandler): RouterFunction<ServerResponse> =
+    fun messageRoutes(handler: MessageRouterHandler): RouterFunction<ServerResponse> =
         coRouter {
             BASE_PATH.nest {
                 POST(CONVERSATIONS_PATH, handler::initializeConversation)

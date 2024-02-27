@@ -1,6 +1,6 @@
 package com.example.chat.account
 
-import com.example.chat.account.WebHandler.Companion.CHAT_USER_ID_PARAM
+import com.example.chat.account.AccountHandler.Companion.CHAT_USER_ID_PARAM
 import com.example.chat.security.web.EnableWebSecurity
 import com.example.chat.security.web.chatUserId
 import com.example.chat.security.web.oauthPrincipal
@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.noContent
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 
 @Component
-class WebHandler(private val service: IdentityAdminService) {
+class AccountHandler(private val service: IdentityAdminService) {
     companion object {
         const val CHAT_USER_ID_PARAM = "chatUserId"
     }
@@ -60,7 +60,7 @@ class WebRoutingConfig {
     }
 
     @Bean
-    fun accountRoutes(handler: WebHandler): RouterFunction<ServerResponse> =
+    fun accountRoutes(handler: AccountHandler): RouterFunction<ServerResponse> =
         coRouter {
             POST(BASE_PATH, handler::registerAccount)
             BASE_PATH.nest {

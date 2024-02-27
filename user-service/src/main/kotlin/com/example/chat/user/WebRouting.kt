@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.server.ResponseStatusException
 
 @Component
-class WebHandler(private val service: UserService) {
+class UserRouterHandler(private val service: UserService) {
 
     companion object {
         const val NICK_NAME_PARAM = "nick-name"
@@ -59,7 +59,7 @@ class WebRoutingConfig {
     }
 
     @Bean
-    fun userRoutes(handler: WebHandler): RouterFunction<ServerResponse> =
+    fun userRoutes(handler: UserRouterHandler): RouterFunction<ServerResponse> =
         coRouter {
             GET(BASE_PATH, handler::getUsers)
             POST(BASE_PATH, handler::registerUser)
