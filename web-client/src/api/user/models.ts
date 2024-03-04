@@ -1,4 +1,3 @@
-
 export interface ChatRegistration {
   nickName: string;
   email?: string;
@@ -21,6 +20,5 @@ export interface UserUpdate {
 
 export enum UpdateType {
   CHANGED,
-  DELETED
+  DELETED,
 }
-

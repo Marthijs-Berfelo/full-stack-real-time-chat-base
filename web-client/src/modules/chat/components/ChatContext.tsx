@@ -25,9 +25,7 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
   }, []);
 
   const totalNewMessages = useMemo(
-    () => conversations
-    .map((conv) => conv.newMessages)
-      .reduce((sum, next) => sum + next, 0),
+    () => conversations.map(conv => conv.newMessages).reduce((sum, next) => sum + next, 0),
     [conversations]
   );
 
@@ -48,9 +46,9 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
   }
 
   function onSelectUser(user: ChatUser): void {
-    const conversation = conversations
-      .find((conversation) => conversation.peerId == user.id)
-    ?? addNewConversation(user);
+    const conversation =
+      conversations.find(conversation => conversation.peerId == user.id) ??
+      addNewConversation(user);
     setSelectedUser(conversation);
   }
 
@@ -68,25 +66,24 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
     if (selectedUser) {
       setSendingMessage(true);
       if (!selectedUser.conversationId) {
-        await initializeConversation(selectedUser.peerId)
+        await initializeConversation(selectedUser.peerId);
       }
       const chatMessage: ChatMessage = {
         from: chatUser!.id,
         to: selectedUser!.peerId,
         conversationId: selectedUser!.conversationId!,
-        message
+        message,
       };
       console.log('TODO: SEND MESSAGE', chatMessage);
-      setConversations((previous) =>
-        previous
-          .map((conv) => {
-            if (conv.conversationId == chatMessage.conversationId) {
-              conv.messages.push(chatMessage)
-            }
-            return conv;
-          })
+      setConversations(previous =>
+        previous.map(conv => {
+          if (conv.conversationId == chatMessage.conversationId) {
+            conv.messages.push(chatMessage);
+          }
+          return conv;
+        })
       );
-      setSelectedUser((previous) => {
+      setSelectedUser(previous => {
         if (previous) {
           previous.messages.push(chatMessage);
         }
@@ -103,7 +100,7 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
 
   function addNewConversation(user: ChatUser): ChatConversation {
     const conversation = createNewConversation(user);
-    setConversations((previous) => [...previous, conversation]);
+    setConversations(previous => [...previous, conversation]);
     return conversation;
   }
 
@@ -129,7 +126,7 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
     onSelectUser,
     onSelectConversation,
     onShowCurrentUser,
-    onSendMessage
+    onSendMessage,
   };
 
   return <ChatContext.Provider value={context}>{children}</ChatContext.Provider>;

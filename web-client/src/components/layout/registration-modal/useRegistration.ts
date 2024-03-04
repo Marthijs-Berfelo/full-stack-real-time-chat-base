@@ -3,9 +3,9 @@ import { AccountRegistration } from '../../../api/account/models';
 import { useState } from 'react';
 import { useAuth } from '../../AuthContext';
 import { useTranslation } from 'react-i18next';
-const { useForm } = Form
+const { useForm } = Form;
 export function useRegistration(): RegistrationHook {
-  const { t } = useTranslation(['common', 'user'])
+  const { t } = useTranslation(['common', 'user']);
   const { registerAccount } = useAuth();
   const [registrationForm] = useForm<AccountRegistration>();
   const [registrationLoading, setRegistrationLoading] = useState(false);
@@ -17,15 +17,15 @@ export function useRegistration(): RegistrationHook {
   }
 
   async function onSubmitRegistration(registration: AccountRegistration): Promise<void> {
-    setRegistrationLoading(true)
+    setRegistrationLoading(true);
     await registerAccount(registration)
       .then(confirmRegistration)
       .catch(rejectRegistration)
-      .finally(() => setRegistrationLoading(false))
+      .finally(() => setRegistrationLoading(false));
   }
 
   function onOk() {
-    registrationForm.submit()
+    registrationForm.submit();
   }
 
   function onCancel() {
@@ -37,12 +37,12 @@ export function useRegistration(): RegistrationHook {
     setShowModal(false);
     Modal.info({
       title: t('common:register'),
-      content: t('user:registration-success')
+      content: t('user:registration-success'),
     });
   }
 
   async function rejectRegistration() {
-    await message.error(t('user:errors.account-registration'))
+    await message.error(t('user:errors.account-registration'));
   }
 
   return {
@@ -52,8 +52,8 @@ export function useRegistration(): RegistrationHook {
     onOpenModal,
     onSubmitRegistration,
     onOk,
-    onCancel
-  }
+    onCancel,
+  };
 }
 
 interface RegistrationHook {

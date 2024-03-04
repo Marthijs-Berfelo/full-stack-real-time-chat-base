@@ -8,47 +8,37 @@ const config = window.env;
 const accessTokenKey = 'access_token';
 const refreshTokenKey = 'refresh_token';
 
-
 function login(username: string, password: string): Promise<TokenResponse> {
-  return requestToken(
-    {
-      client_id: config.idp.clientId,
-      grant_type: 'password',
-      username,
-      password
-    } as never
-  )
-    .then(updateAuth)
+  return requestToken({
+    client_id: config.idp.clientId,
+    grant_type: 'password',
+    username,
+    password,
+  } as never).then(updateAuth);
 }
 
 function refreshToken(): Promise<TokenResponse> {
-  return requestToken(
-    {
-      client_id: config.idp.clientId,
-      grant_type: 'refresh_token',
-      [refreshTokenKey]: localStorage.getItem(refreshTokenKey)
-    } as never
-  )
-    .then(updateAuth)
+  return requestToken({
+    client_id: config.idp.clientId,
+    grant_type: 'refresh_token',
+    [refreshTokenKey]: localStorage.getItem(refreshTokenKey),
+  } as never).then(updateAuth);
 }
 
 function logout(): Promise<void> {
-  const body = toFormData(
-    {
-      client_id: config.idp.clientId,
-      [refreshTokenKey]: localStorage.getItem(refreshTokenKey)
-    } as never
-  );
-  return axios.post(
-    `${config.idp.url}/realms/${config.idp.realm}/protocol/openid-connect/logout`,
-    body,
-    { headers: WWW_FORM_HEADER },
-  )
-    .then(clearAuth)
+  const body = toFormData({
+    client_id: config.idp.clientId,
+    [refreshTokenKey]: localStorage.getItem(refreshTokenKey),
+  } as never);
+  return axios
+    .post(`${config.idp.url}/realms/${config.idp.realm}/protocol/openid-connect/logout`, body, {
+      headers: WWW_FORM_HEADER,
+    })
+    .then(clearAuth);
 }
 
 function getToken(): string | undefined {
-  return localStorage.getItem(accessTokenKey) ?? undefined
+  return localStorage.getItem(accessTokenKey) ?? undefined;
 }
 
 function toTokenResponse(authTokens: AuthTokens): TokenResponse {
@@ -72,8 +62,8 @@ function extractPrincipal(token: TokenResponse): Principal {
     middleName: decoded.middle_name,
     email: decoded.email,
     nickName: decoded.nick_name,
-    chatUserId: decoded.chat_user_id
-  }
+    chatUserId: decoded.chat_user_id,
+  };
 }
 
 const idp = {
@@ -82,7 +72,7 @@ const idp = {
   refreshToken,
   extractPrincipal,
   toTokenResponse,
-}
+};
 
 export { idp, getToken };
 
@@ -94,16 +84,17 @@ function updateAuth(token: TokenResponse): TokenResponse {
 
 function clearAuth(): void {
   localStorage.removeItem(accessTokenKey);
-  localStorage.removeItem(refreshTokenKey)
+  localStorage.removeItem(refreshTokenKey);
 }
 
 function requestToken(body: never): Promise<TokenResponse> {
-  return axios.post<TokenResponse>(
-    `${config.idp.url}/realms/${config.idp.realm}/protocol/openid-connect/token`,
-    toFormData(body),
-    { headers: WWW_FORM_HEADER },
-  )
-    .then((res) => res.data)
+  return axios
+    .post<TokenResponse>(
+      `${config.idp.url}/realms/${config.idp.realm}/protocol/openid-connect/token`,
+      toFormData(body),
+      { headers: WWW_FORM_HEADER }
+    )
+    .then(res => res.data);
 }
 
 export interface TokenResponse {

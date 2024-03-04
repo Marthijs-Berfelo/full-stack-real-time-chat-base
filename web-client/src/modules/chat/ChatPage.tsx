@@ -20,5 +20,5 @@ export default function ChatPage(): JSX.Element {
         <MessageForm />
       </Flex>
     </ChatContextProvider>
-  )
+  );
 }

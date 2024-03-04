@@ -6,9 +6,5 @@ import { Inbox } from './Inbox';
 export function ChatDetails(): JSX.Element {
   const { selectedUser } = useChat();
 
-  return selectedUser ? (
-    <Conversation selectedUser={selectedUser} />
-  ) : (
-    <Inbox />
-  );
+  return selectedUser ? <Conversation selectedUser={selectedUser} /> : <Inbox />;
 }

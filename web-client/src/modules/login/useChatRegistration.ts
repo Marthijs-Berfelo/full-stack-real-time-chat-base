@@ -1,7 +1,7 @@
 import { Form, FormInstance } from 'antd';
 import { ChatRegistration } from '../../api/user/models';
 import { useState } from 'react';
-const { useForm } = Form
+const { useForm } = Form;
 
 export function useChatRegistration(): ChatRegistrationHook {
   const [loading, setLoading] = useState(false);
@@ -9,7 +9,7 @@ export function useChatRegistration(): ChatRegistrationHook {
 
   async function onSubmit(registration: ChatRegistration): Promise<void> {
     setLoading(true);
-    await setTimeout(() => console.log('TODO REGISTER', registration), 2000);
+    setTimeout(() => console.log('TODO REGISTER', registration), 2000);
     setLoading(false);
   }
 
@@ -21,7 +21,7 @@ export function useChatRegistration(): ChatRegistrationHook {
     loading,
     registrationForm,
     onSubmit,
-    onReset
+    onReset,
   };
 }
 
