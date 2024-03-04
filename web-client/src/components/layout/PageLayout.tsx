@@ -16,5 +16,5 @@ export function PageLayout() {
         <UserMenu />
       </LayoutProvider>
     </Layout>
-  )
+  );
 }

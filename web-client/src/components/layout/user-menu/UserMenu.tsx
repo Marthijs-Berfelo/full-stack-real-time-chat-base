@@ -19,17 +19,12 @@ export function UserMenu() {
       collapsible
       trigger={null}
       collapsed={!showUserMenu}
-
-      >
+    >
       <Flex className="px-2 pt-2">
         <CloseOutlined className="text-lg" onClick={toggleUserMenu} />
       </Flex>
       <Flex align="center" justify="center" className="px-2 pt-12">
-        {currentUser ? (
-          <UserInfo user={currentUser} />
-        ) : (
-          <LoginForm />
-        )}
+        {currentUser ? <UserInfo user={currentUser} /> : <LoginForm />}
       </Flex>
     </Sider>
   );

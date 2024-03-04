@@ -11,7 +11,7 @@ interface ConversationProps {
 }
 
 export function Conversation({ selectedUser }: ConversationProps): JSX.Element {
-  const { t } = useTranslation(['chat'])
+  const { t } = useTranslation(['chat']);
 
   return (
     <Flex className="w-full h-full">
@@ -21,8 +21,8 @@ export function Conversation({ selectedUser }: ConversationProps): JSX.Element {
       <Flex vertical justify="space-evenly">
         <Text className="text-xl">{selectedUser.user?.nickName ?? t('chat:user.off-line')}</Text>
       </Flex>
-      {selectedUser.messages.map((message) => (
-        <Message key={message.id} peerId={selectedUser.peerId} message={message}/>
+      {selectedUser.messages.map(message => (
+        <Message key={message.id} peerId={selectedUser.peerId} message={message} />
       ))}
     </Flex>
   );

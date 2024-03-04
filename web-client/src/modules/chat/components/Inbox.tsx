@@ -7,14 +7,14 @@ const { Text } = Typography;
 
 export function Inbox(): JSX.Element {
   const { conversations, onSelectConversation } = useChat();
-  const { t } = useTranslation(['chat'])
+  const { t } = useTranslation(['chat']);
 
   return (
     <Flex className="w-full h-full">
       <Flex vertical justify="space-evenly">
         <Text className="text-2xl">{t('chat:section.inbox')}</Text>
       </Flex>
-      {conversations.map((conversation) => (
+      {conversations.map(conversation => (
         <Text
           key={conversation.peerId}
           className="m-3 text-lg"

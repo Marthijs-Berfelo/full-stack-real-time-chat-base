@@ -3,7 +3,7 @@ export interface ConversationRegistration {
 }
 
 export interface Conversation {
-  id: string,
+  id: string;
   users: string[];
   messages: ChatMessage[];
 }

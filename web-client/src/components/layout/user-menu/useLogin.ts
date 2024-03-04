@@ -3,11 +3,11 @@ import { useAuth } from '../../AuthContext';
 import { useLayout } from '../LayoutContext';
 import { useEffect } from 'react';
 import { Form, FormInstance, message } from 'antd';
-const { useForm } = Form
+const { useForm } = Form;
 
 export function useLogin(): LoginHook {
   const [loginForm] = useForm<LoginForm>();
-  const { t } = useTranslation(['user'])
+  const { t } = useTranslation(['user']);
   const { login } = useAuth();
   const { showUserMenu } = useLayout();
 
@@ -15,14 +15,13 @@ export function useLogin(): LoginHook {
     return () => {
       loginForm.resetFields(['username', 'password']);
     };
-  }, [showUserMenu])
+  }, [showUserMenu]);
 
   async function onSubmit(data: LoginForm): Promise<void> {
-    await login(data.username, data.password)
-      .catch((err) => {
-        console.error('Login failed', err);
-        message.error(t('user:errors.login'));
-      })
+    await login(data.username, data.password).catch(err => {
+      console.error('Login failed', err);
+      message.error(t('user:errors.login'));
+    });
   }
 
   return {

@@ -9,11 +9,7 @@ export function PageContent() {
 
   return (
     <Content className="p-3 overflow-x-clip overflow-y-auto">
-      {!currentUser ? (
-        <LoginPage />
-      ) : (
-        <ChatPage />
-      )}
+      {!currentUser ? <LoginPage /> : <ChatPage />}
     </Content>
-  )
+  );
 }

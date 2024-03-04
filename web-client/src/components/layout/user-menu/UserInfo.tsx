@@ -1,7 +1,7 @@
 import React from 'react';
 import { Principal } from '../../../api/idp';
 import { Flex, Typography } from 'antd';
-const { Text } = Typography
+const { Text } = Typography;
 
 export function UserInfo({ user }: { user: Principal }) {
   return (

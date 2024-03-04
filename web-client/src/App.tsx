@@ -9,17 +9,20 @@ import Loader from './components/Loader';
 import { PageLayout } from './components/layout/PageLayout';
 
 function App() {
-    return (
-        <ConfigProvider theme={andTheme}>
-            <Suspense fallback={<Loader />} >
-              <AuthProvider>
-                <I18nextProvider i18n={i18n} defaultNS={'common'}>
-                  <PageLayout />
-                </I18nextProvider>
-              </AuthProvider>
-            </Suspense>
-        </ConfigProvider>
-    );
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  console.log('TEST', window.env.test);
+  return (
+    <ConfigProvider theme={andTheme}>
+      <Suspense fallback={<Loader />}>
+        <AuthProvider>
+          <I18nextProvider i18n={i18n} defaultNS={'common'}>
+            <PageLayout />
+          </I18nextProvider>
+        </AuthProvider>
+      </Suspense>
+    </ConfigProvider>
+  );
 }
 
 export default App;

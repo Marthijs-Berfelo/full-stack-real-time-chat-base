@@ -11,50 +11,39 @@ export default function api(baseUrl: string) {
   });
 
   http.interceptors.response.use(
-    (response) => response.data,
-    (error) => Promise.reject(error),
-  )
+    response => response.data,
+    error => Promise.reject(error)
+  );
 
   function get<R>(path: string): Promise<R> {
-    return http.get<never,R>(path)
+    return http.get<never, R>(path);
   }
 
   function getSecure<R>(path: string): Promise<R> {
-    return http.get<never, R>(
-      path,
-      withAuthorization()
-    )
+    return http.get<never, R>(path, withAuthorization());
   }
 
   function post<B, R>(path: string, body: B): Promise<R> {
-    return http.post<B, R>(path, body)
+    return http.post<B, R>(path, body);
   }
 
   function postSecure<B, R>(path: string, body: B): Promise<R> {
-    return http.post<B, R>(
-      path,
-      body,
-      withAuthorization()
-    )
+    return http.post<B, R>(path, body, withAuthorization());
   }
 
   function putSecure<B, R>(path: string, body?: B): Promise<R> {
-    return http.put<B,R>(
-      path,
-      body,
-      withAuthorization()
-    )
+    return http.put<B, R>(path, body, withAuthorization());
   }
 
   function deleteSecure(path: string): Promise<void> {
-    return http.delete(path, withAuthorization())
+    return http.delete(path, withAuthorization());
   }
 
   function withAuthorization() {
     return {
       headers: {
-        Authorization: `Bearer ${getToken()}`
-      }
+        Authorization: `Bearer ${getToken()}`,
+      },
     };
   }
 
@@ -64,6 +53,6 @@ export default function api(baseUrl: string) {
     post,
     postSecure,
     putSecure,
-    deleteSecure
+    deleteSecure,
   };
 }

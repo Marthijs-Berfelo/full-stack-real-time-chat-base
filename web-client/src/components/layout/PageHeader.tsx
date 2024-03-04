@@ -33,10 +33,15 @@ export function PageHeader() {
 function UserIcon() {
   const { currentUser } = useAuth();
   if (!currentUser) {
-    return <Avatar className="bg-indigo-500" icon={<UserOutlined className="text-lg text-white" />} />;
+    return (
+      <Avatar className="bg-indigo-500" icon={<UserOutlined className="text-lg text-white" />} />
+    );
   } else {
-    return <Avatar className="bg-indigo-500">
-      {currentUser.firsName.charAt(0)}{currentUser.lastName.charAt(0)}
-    </Avatar>
+    return (
+      <Avatar className="bg-indigo-500">
+        {currentUser.firsName.charAt(0)}
+        {currentUser.lastName.charAt(0)}
+      </Avatar>
+    );
   }
 }

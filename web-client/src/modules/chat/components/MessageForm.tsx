@@ -2,7 +2,7 @@ import React, { JSX } from 'react';
 import { Badge, Button, Col, Form, FormInstance, Input, Row } from 'antd';
 import { useChat } from './ChatContext';
 import { useTranslation } from 'react-i18next';
-const { useForm } = Form
+const { useForm } = Form;
 export function MessageForm(): JSX.Element {
   const { t } = useTranslation(['chat']);
   const { sendingMessage, totalNewMessages, disableMessageForm, onShowInbox } = useChat();
@@ -12,7 +12,9 @@ export function MessageForm(): JSX.Element {
     <Col className="w-full h-full">
       <Row justify="center" className="m-3">
         <Badge count={totalNewMessages}>
-          <Button onClick={onShowInbox} className="text-lg">{t('chat:section.inbox')}</Button>
+          <Button onClick={onShowInbox} className="text-lg">
+            {t('chat:section.inbox')}
+          </Button>
         </Badge>
       </Row>
       <Form
@@ -26,18 +28,10 @@ export function MessageForm(): JSX.Element {
         <Form.Item name="message" required>
           <Input />
         </Form.Item>
-        <Button
-          htmlType="submit"
-          type="primary"
-          disabled={sendingMessage}
-        >
+        <Button htmlType="submit" type="primary" disabled={sendingMessage}>
           {t('chat:message.send')}
         </Button>
-        <Button
-          htmlType="reset"
-          type="default"
-          disabled={sendingMessage}
-        >
+        <Button htmlType="reset" type="default" disabled={sendingMessage}>
           {t('chat:message.reset')}
         </Button>
       </Form>
@@ -50,7 +44,7 @@ function useMessageForm(): MessageFormHook {
   const { onSendMessage } = useChat();
 
   function onReset(): void {
-    messageForm.setFieldsValue({})
+    messageForm.setFieldsValue({});
   }
 
   async function onSubmit(data: NewMessageForm): Promise<void> {
@@ -60,7 +54,7 @@ function useMessageForm(): MessageFormHook {
   return {
     messageForm,
     onReset,
-    onSubmit
+    onSubmit,
   };
 }
 
