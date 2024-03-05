@@ -12,7 +12,7 @@ internal suspend fun MessageService.findExistingConversation(userId: String, use
         ?.also { log.atDebug().log { "Found conversation $it" } }
 
 internal suspend fun MessageService.createConversation(users: List<String>): ConversationDocument =
-    Conversation(users = users)
+    Conversation(id = "", users = users)
         .also { log.atDebug().log { "Creating conversation: $it" } }
         .toDocument()
         .let { conversationRepo.save(it) }
