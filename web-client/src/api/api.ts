@@ -15,8 +15,8 @@ export default function api(baseUrl: string) {
     error => Promise.reject(error)
   );
 
-  function get<R>(path: string): Promise<R> {
-    return http.get<never, R>(path);
+  function get<R>(path: string, params?: unknown): Promise<R> {
+    return http.get<never, R>(path, params ? { params } : undefined);
   }
 
   function getSecure<R>(path: string): Promise<R> {

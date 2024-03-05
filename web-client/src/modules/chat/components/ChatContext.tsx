@@ -1,6 +1,6 @@
 import React, { JSX, useEffect, useMemo, useState } from 'react';
-import { ChatUser } from '../../../api/user/models';
-import { ChatMessage } from '../../../api/message/models';
+import { userService, ChatUser } from '../../../api/user';
+import { messageService, ChatMessage } from '../../../api/message';
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { useAuth } from '../../../components/AuthContext';
 
@@ -18,10 +18,15 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
   const [users, setUsers] = useState<ChatUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<ChatConversation>();
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
-  const { chatUser } = useAuth();
+  const { chatUser, exitChat } = useAuth();
 
   useEffect(() => {
     onLoadUsers();
+    const timeOut = setTimeout(() => {
+      onLoadUsers();
+      updateMessages();
+    }, 30_000);
+    return () => clearTimeout(timeOut);
   }, []);
 
   const totalNewMessages = useMemo(
@@ -36,9 +41,11 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
 
   async function onLoadUsers(): Promise<void> {
     setUsersLoading(true);
-    console.log('TODO: LOAD USERS');
-    setUsers([]);
-    setUsersLoading(false);
+    await userService
+      .getUsers()
+      .then(setUsers)
+      .catch(() => setUsers([]))
+      .finally(() => setUsersLoading(false));
   }
 
   function onShowInbox(): void {
@@ -74,28 +81,59 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
         conversationId: selectedUser!.conversationId!,
         message,
       };
-      console.log('TODO: SEND MESSAGE', chatMessage);
-      setConversations(previous =>
-        previous.map(conv => {
-          if (conv.conversationId == chatMessage.conversationId) {
-            conv.messages.push(chatMessage);
-          }
-          return conv;
+      await messageService
+        .sendMessage(chatMessage)
+        .then(chatMessage => {
+          setConversations(previous =>
+            previous.map(conv => {
+              if (conv.conversationId == chatMessage.conversationId) {
+                conv.messages.push(chatMessage);
+              }
+              return conv;
+            })
+          );
+          setSelectedUser(previous => {
+            if (previous) {
+              previous.messages.push(chatMessage);
+            }
+            return previous;
+          });
         })
-      );
-      setSelectedUser(previous => {
-        if (previous) {
-          previous.messages.push(chatMessage);
-        }
-        return previous;
-      });
+        .finally(() => setSendingMessage(false));
     }
   }
 
+  async function onExit(): Promise<void> {
+    await messageService.removeConversations();
+    await exitChat();
+  }
+
   async function initializeConversation(peerId: string): Promise<void> {
-    console.log('TODO: INIT CONVERSATION', peerId);
-    console.log('TODO: UPDATE CONVERSATIONS', peerId);
-    console.log('TODO: UPDATE SELECTED USER', peerId);
+    await messageService.initializeConversation(peerId).then(conversation => {
+      setConversations(previous => {
+        const chatConversation = previous.find(val => val.peerId === peerId);
+        const conversations = previous.filter(val => val.peerId !== peerId);
+        if (chatConversation) {
+          chatConversation.conversationId = conversation.id;
+          conversations.push(chatConversation);
+        }
+        return conversations;
+      });
+      setSelectedUser(previous => {
+        if (previous) {
+          previous.conversationId = conversation.id;
+          return previous;
+        } else {
+          return {
+            peerId,
+            conversationId: conversation.id,
+            user: chatUser,
+            messages: conversation.messages,
+            newMessages: 0,
+          };
+        }
+      });
+    });
   }
 
   function addNewConversation(user: ChatUser): ChatConversation {
@@ -113,6 +151,8 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
     };
   }
 
+  async function updateMessages() {}
+
   const context: ChatContextType = {
     usersLoading,
     sendingMessage,
@@ -127,6 +167,7 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
     onSelectConversation,
     onShowCurrentUser,
     onSendMessage,
+    onExit,
   };
 
   return <ChatContext.Provider value={context}>{children}</ChatContext.Provider>;
@@ -148,6 +189,7 @@ interface ChatContextType {
   onSelectConversation: (conversation: ChatConversation) => void;
   onShowCurrentUser: () => void;
   onSendMessage: (message: string) => Promise<void>;
+  onExit: () => Promise<void>;
 }
 
 export interface ChatConversation {

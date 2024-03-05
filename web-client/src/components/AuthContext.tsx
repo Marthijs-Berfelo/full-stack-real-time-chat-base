@@ -8,8 +8,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { AccountRegistration, ChatAccountRegistration } from '../api/account/models';
-import { ChatUser } from '../api/user/models';
+import { accountService, AccountRegistration, ChatAccountRegistration } from '../api/account';
+import { ChatRegistration, ChatUser, userService } from '../api/user';
 
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
@@ -52,16 +52,47 @@ export function AuthProvider({ children }: PropsWithChildren): JSX.Element {
   }
 
   async function registerAccount(registration: AccountRegistration): Promise<void> {
-    console.log('TODO REGISTER:', registration);
+    setLoading(true);
+    await accountService.registerAccount(registration).finally(disableLoading);
   }
 
-  async function registerChatAccount(chatUser: ChatUser): Promise<void> {
-    setChatUser(chatUser);
-    const chatRegistration: ChatAccountRegistration = {
-      nickName: chatUser.nickName,
-      chatUserId: chatUser.id,
-    };
-    console.log('TODO REGISTER:', chatRegistration);
+  async function registerChatAccount(registration: ChatRegistration): Promise<void> {
+    setLoading(true);
+    await userService
+      .register(registration)
+      .then(user => {
+        setChatUser(user);
+        return user;
+      })
+      .then(async chatUser => {
+        if (token) {
+          await accountService.updateChatUserId(chatUser.id);
+        } else {
+          const chatRegistration: ChatAccountRegistration = {
+            nickName: chatUser.nickName,
+            chatUserId: chatUser.id,
+          };
+          await accountService
+            .registerChatAccount(chatRegistration)
+            .then(idp.toTokenResponse)
+            .then(setToken);
+        }
+      })
+      .finally(disableLoading);
+  }
+
+  async function exitChat(): Promise<void> {
+    setLoading(true);
+    await userService
+      .removeUser()
+      .then(async () => {
+        await accountService.removeChatAccount();
+        if (currentUser && currentUser.isTemporary) {
+          await logout();
+        }
+        setChatUser(undefined);
+      })
+      .finally(disableLoading);
   }
 
   function disableLoading() {
@@ -76,6 +107,7 @@ export function AuthProvider({ children }: PropsWithChildren): JSX.Element {
     logout,
     registerAccount,
     registerChatAccount,
+    exitChat,
     currentUser,
     chatUser,
   };
@@ -87,7 +119,8 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   registerAccount: (registration: AccountRegistration) => Promise<void>;
-  registerChatAccount: (chatUser: ChatUser) => Promise<void>;
+  registerChatAccount: (registration: ChatRegistration) => Promise<void>;
+  exitChat: () => Promise<void>;
   loading: boolean;
   currentUser?: Principal;
   chatUser?: ChatUser;

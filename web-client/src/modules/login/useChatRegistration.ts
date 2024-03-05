@@ -1,26 +1,25 @@
 import { Form, FormInstance } from 'antd';
-import { ChatRegistration } from '../../api/user/models';
-import { useState } from 'react';
+import { ChatRegistration, userService } from '../../api/user';
+import { useAuth } from '../../components/AuthContext';
 const { useForm } = Form;
 
 export function useChatRegistration(): ChatRegistrationHook {
-  const [loading, setLoading] = useState(false);
   const [registrationForm] = useForm<ChatRegistration>();
-
-  async function onSubmit(registration: ChatRegistration): Promise<void> {
-    setLoading(true);
-    setTimeout(() => console.log('TODO REGISTER', registration), 2000);
-    setLoading(false);
-  }
+  const { registerChatAccount, loading } = useAuth();
 
   function onReset() {
     registrationForm.setFieldsValue({});
   }
 
+  function onValidateNickName(nickName: string): Promise<boolean> {
+    return userService.validateNickName(nickName);
+  }
+
   return {
     loading,
     registrationForm,
-    onSubmit,
+    onSubmit: registerChatAccount,
+    onValidateNickName,
     onReset,
   };
 }
@@ -28,6 +27,7 @@ export function useChatRegistration(): ChatRegistrationHook {
 interface ChatRegistrationHook {
   loading: boolean;
   registrationForm: FormInstance<ChatRegistration>;
+  onValidateNickName: (nickName: string) => Promise<boolean>;
   onSubmit: (registration: ChatRegistration) => Promise<void>;
   onReset: () => void;
 }

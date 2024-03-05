@@ -1,7 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import { toFormData, WWW_FORM_HEADER } from './api-utils';
-import { AuthTokens } from './account/models';
+import { AuthTokens } from './account';
 
 // @ts-expect-error no-env-on-window
 const config = window.env;
@@ -63,6 +63,7 @@ function extractPrincipal(token: TokenResponse): Principal {
     email: decoded.email,
     nickName: decoded.nick_name,
     chatUserId: decoded.chat_user_id,
+    isTemporary: !decoded.realm_roles.includes('USER'),
   };
 }
 
@@ -115,6 +116,7 @@ export interface Principal {
   email: string;
   nickName?: string;
   chatUserId?: string;
+  isTemporary: boolean;
 }
 
 interface AuthUser {
@@ -126,4 +128,5 @@ interface AuthUser {
   nick_name?: string;
   chat_user_id?: string;
   sub: string;
+  realm_roles: string[];
 }

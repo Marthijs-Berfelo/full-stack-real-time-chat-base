@@ -5,12 +5,24 @@ import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
   const { t } = useTranslation(['common', 'user']);
-  const { loading, registrationForm, onSubmit, onReset } = useChatRegistration();
+  const { loading, registrationForm, onValidateNickName, onSubmit, onReset } =
+    useChatRegistration();
 
   return (
     <Flex justify={'center'}>
       <Form form={registrationForm} onFinish={onSubmit} onReset={onReset} layout="vertical">
-        <Form.Item name="nickName" label={t('user:nick-name')} rules={[{ required: true }]}>
+        <Form.Item
+          name="nickName"
+          label={t('user:nick-name')}
+          rules={[
+            { required: true },
+            {
+              validator: async (_, value) => {
+                return await onValidateNickName(value);
+              },
+            },
+          ]}
+        >
           <Input />
         </Form.Item>
         <Form.Item name="statusMessage" label={t('user:status')}>
