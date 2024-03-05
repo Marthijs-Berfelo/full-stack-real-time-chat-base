@@ -20,6 +20,15 @@ spring:
         jwt:
           issuer-uri: ${IDENTITY_SERVICE_URL}/realms/${CHAT_REALM}
 
+chat:
+  security:
+    client-id: ${spring.application.name}
+    unsecured-resources:
+      - /actuator
+      - /actuator/**
+      - /api/account
+      - /api/account/chat
+
 management:
   endpoint:
     shutdown:
@@ -42,15 +51,6 @@ management:
     tracing:
       endpoint: http://localhost:4318/v1/traces
 
-
-chat:
-  security:
-    client-id: ${spring.application.name}
-    unsecured-resources:
-      - /actuator
-      - /actuator/**
-      - /hello
-
 admin:
   client:
     url: ${IDENTITY_SERVICE_URL}
@@ -64,7 +64,10 @@ logging:
   level:
     root: info
     com:
-      example: debug
+      example:
+        _: debug
+        chat:
+          security: debug
     io:
       micrometer: warn
       opentelemetry: warn

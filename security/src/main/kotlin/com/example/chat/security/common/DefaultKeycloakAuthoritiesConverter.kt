@@ -3,7 +3,6 @@ package com.example.chat.security.common
 import jakarta.annotation.PostConstruct
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
@@ -13,7 +12,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component
 
 @Component
-@ConditionalOnMissingBean(AuthoritiesConverter::class)
 class DefaultKeycloakAuthoritiesConverter(authProperties: SecurityProperties) :
     KeycloakAuthoritiesConverter<SecurityProperties.TokenAttributeProperties> {
 

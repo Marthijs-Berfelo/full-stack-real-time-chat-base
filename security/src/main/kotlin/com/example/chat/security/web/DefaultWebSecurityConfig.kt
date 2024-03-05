@@ -5,6 +5,7 @@ import com.example.chat.security.common.SecurityProperties
 import jakarta.annotation.PostConstruct
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -20,6 +21,7 @@ class DefaultWebSecurityConfig(override val properties: SecurityProperties) : We
         log.atInfo().log { "Initialized: ${this::class.simpleName}" }
     }
 
+    @Bean
     override fun securityWebFilterChain(
         http: ServerHttpSecurity,
         converter: AuthoritiesConverter
