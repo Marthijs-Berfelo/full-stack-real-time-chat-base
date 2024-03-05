@@ -9,9 +9,6 @@ import Loader from './components/Loader';
 import { PageLayout } from './components/layout/PageLayout';
 
 function App() {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  console.log('TEST', window.env.test);
   return (
     <ConfigProvider theme={andTheme}>
       <Suspense fallback={<Loader />}>
