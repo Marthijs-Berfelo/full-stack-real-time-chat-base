@@ -1,7 +1,14 @@
-import React, { JSX, useEffect, useMemo, useState } from 'react';
-import { userService, ChatUser } from '../../../api/user';
-import { messageService, ChatMessage } from '../../../api/message';
-import { createContext, PropsWithChildren, useContext } from 'react';
+import React, {
+  createContext,
+  JSX,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { ChatUser, userService } from '../../../api/user';
+import { ChatMessage, messageService } from '../../../api/message';
 import { useAuth } from '../../../components/AuthContext';
 
 export function useChat(): ChatContextType {
@@ -15,6 +22,7 @@ export function useChat(): ChatContextType {
 export function ChatContextProvider({ children }: PropsWithChildren): JSX.Element {
   const [usersLoading, setUsersLoading] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [lastMessageAt, setLastMessageAt] = useState<string>();
   const [users, setUsers] = useState<ChatUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<ChatConversation>();
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
@@ -151,7 +159,33 @@ export function ChatContextProvider({ children }: PropsWithChildren): JSX.Elemen
     };
   }
 
-  async function updateMessages() {}
+  async function updateMessages() {
+    await messageService.getMessages(lastMessageAt).then(messages => {
+      messages.forEach(handleNewMessage);
+      setLastMessageAt(messages.pop()?.sentAt);
+    });
+  }
+
+  function handleNewMessage(message: ChatMessage): void {
+    const conversation = conversations.find(
+      conversation => conversation.conversationId === message.conversationId
+    ) ?? {
+      conversationId: message.conversationId,
+      peerId: message.from,
+      user: users.find(user => user.id == message.from),
+      messages: [],
+      newMessages: 0,
+    };
+    conversation.newMessages = conversation.newMessages + 1;
+    conversation.messages.push(message);
+    setConversations(previous => [
+      conversation,
+      ...previous.filter(conv => conv.conversationId !== conversation.conversationId),
+    ]);
+    if (selectedUser && selectedUser.conversationId === conversation.conversationId) {
+      setSelectedUser(conversation);
+    }
+  }
 
   const context: ChatContextType = {
     usersLoading,

@@ -19,8 +19,8 @@ export default function api(baseUrl: string) {
     return http.get<never, R>(path, params ? { params } : undefined);
   }
 
-  function getSecure<R>(path: string): Promise<R> {
-    return http.get<never, R>(path, withAuthorization());
+  function getSecure<R>(path: string, params?: unknown): Promise<R> {
+    return http.get<never, R>(path, { ...withAuthorization(), params });
   }
 
   function post<B, R>(path: string, body: B): Promise<R> {

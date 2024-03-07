@@ -5,6 +5,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import java.time.Instant
+
+internal fun MessageService.findMessages(chatUserId: String, sentAfter: Instant? = null): Flow<MessageDocument> =
+    sentAfter
+        ?.let { messageRepo.findAllByToAndSentAtGreaterThanOrderBySentAtAsc(chatUserId, it) }
+        ?: messageRepo.findAllByToOrderBySentAtAsc(chatUserId)
 
 internal suspend fun MessageService.findExistingConversation(userId: String, users: List<String>): ConversationDocument? =
     conversationRepo.getAllByUsersContains(userId)

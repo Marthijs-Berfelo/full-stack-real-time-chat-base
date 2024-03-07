@@ -22,8 +22,9 @@ function sendMessage(message: ChatMessage): Promise<ChatMessage> {
   return http.postSecure(`${CONVERSATIONS_PATH}/${message.conversationId}`, message);
 }
 
-function getMessages(): Promise<ChatMessage[]> {
-  return http.getSecure(MESSAGES_PATH);
+function getMessages(lastMessageAt?: string): Promise<ChatMessage[]> {
+  const params = !!lastMessageAt ? { 'sent-after': lastMessageAt } : undefined;
+  return http.getSecure(MESSAGES_PATH, params);
 }
 
 export const messageService = {

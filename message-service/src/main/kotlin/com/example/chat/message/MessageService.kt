@@ -11,6 +11,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
+import java.time.Instant
 
 @Validated
 @Service
@@ -48,9 +49,8 @@ class MessageService(
         }
             .onFailure { log.atWarn().setCause(it).log { "Failed to receive message: $message" } }
 
-    fun getMessages(chatUserId: String): Flow<ChatMessage> =
-        messageRepo
-            .findAllByTo(chatUserId)
+    fun getMessages(chatUserId: String, sentAfter: Instant? = null): Flow<ChatMessage> =
+        findMessages(chatUserId, sentAfter)
             .map(MessageDocument::toMessage)
 
     fun messageUpdates(chatUserId: String): Flow<ChatMessage> =

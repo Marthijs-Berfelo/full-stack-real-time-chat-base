@@ -14,12 +14,14 @@ import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.ServerResponse.noContent
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.server.ResponseStatusException
+import java.time.Instant
 
 @Component
 class MessageRouterHandler(private val service: MessageService) {
 
     companion object {
         const val CONVERSATION_ID_PARAM = "conversationId"
+        const val AFTER_PARAM = "sent-after"
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -41,7 +43,8 @@ class MessageRouterHandler(private val service: MessageService) {
     suspend fun getMessages(request: ServerRequest): ServerResponse =
         request
             .chatUserId()
-            .let { service.getMessages(it) }
+            .let { it to request.queryParamOrNull(AFTER_PARAM)?.let { after -> Instant.parse(after) } }
+            .let { (chatUserId, sentAfter) -> service.getMessages(chatUserId, sentAfter) }
             .let { ok().bodyAndAwait(it) }
 
     @PreAuthorize("isAuthenticated()")
